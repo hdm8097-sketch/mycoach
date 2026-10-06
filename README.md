@@ -3,9 +3,14 @@
 برنامج ويب خفيف للمدربين الاحترافيين، يعمل بالكامل داخل المتصفح (بدون إنترنت وبدون خادم)،
 بواجهة **عربية + إنجليزية**.
 
+> 🌐 **النسخة المباشرة (GitHub Pages)**: https://hdm8097-sketch.github.io/mycoach/
+> 📦 **المستودع**: https://github.com/hdm8097-sketch/mycoach
+
 ---
 
 ## 🚀 التشغيل
+
+> ⚡ لا حاجة لتنزيل شيء: افتح **النسخة المباشرة** أعلاه من أي جهاز، أو نزّل المشروع وافتحه محلياً.
 
 1. افتح مجلد المشروع.
 2. انقر مرتين على `index.html` ليُفتح في متصفحك (Chrome / Edge مُفضّل).
@@ -106,6 +111,18 @@ assets/js/views-nutrition.js
 assets/js/view-3d.js       المختبر ثلاثي الأبعاد (Three.js)
 assets/js/app.js           التوجيه ولوحة التحكم
 ```
+
+---
+
+## 🌐 النشر على GitHub Pages
+
+- **المستودع**: https://github.com/hdm8097-sketch/mycoach
+- **النسخة المباشرة**: https://hdm8097-sketch.github.io/mycoach/
+
+- **النشر تلقائي**: أي `git push` إلى فرع `main` يُعيد بناء الموقع خلال ثوانٍ
+  (الإعداد: Settings ← Pages ← Deploy from a branch ← `main` / `/`).
+- الملف `.nojekyll` يعطّل معالجة Jekyll ليبقى كل ملف كما هو (أوفر للتشغيل الثابت).
+- مجلد `aureva/` (مشروع مستقل داخل المجلد) مستبعد عبر `.gitignore`.
 
 ---
 
