@@ -1,0 +1,6 @@
+# مجلد مشروع مستقل موجود داخل هذا المجلد (ليس جزءاً من MyCoach)
+aureva/
+# ملفات نظام ويندوز
+Thumbs.db
+desktop.ini
+.DS_Store

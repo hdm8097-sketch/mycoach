@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مدربي | MyCoach — إدارة كورسات كمال الأجسام</title>
+<script>
+/* تطبيق الثيم المحفوظ قبل رسم الصفحة لمنع الوميض */
+try{
+  var _st=JSON.parse(localStorage.getItem("mycoach.v1")||"{}");
+  document.documentElement.setAttribute("data-theme",(_st.settings&&_st.settings.theme)||"dark");
+}catch(e){document.documentElement.setAttribute("data-theme","dark")}
+</script>
+<link rel="icon" type="image/png" href="assets/img/favicon.png">
+<link rel="apple-touch-icon" href="assets/img/logo.png">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo"><img src="assets/img/logo.png" alt="MyCoach" onerror="this.parentNode.textContent='💪'"></div>
+      <div class="brand-text">
+        <strong>مدربي</strong>
+        <span>MyCoach · Fitness Pro</span>
+      </div>
+    </div>
+
+    <nav class="nav" id="mainNav">
+      <button class="nav-item active" data-view="dashboard"><span class="nav-ico">📊</span><span class="nav-lbl">لوحة التحكم<em>Dashboard</em></span></button>
+      <button class="nav-item" data-view="exercises"><span class="nav-ico">🏋️</span><span class="nav-lbl">قاعدة التمارين<em>Exercises</em></span></button>
+      <button class="nav-item" data-view="plans"><span class="nav-ico">📋</span><span class="nav-lbl">خطط التمارين<em>Workout Plans</em></span></button>
+      <button class="nav-item" data-view="clients"><span class="nav-ico">👥</span><span class="nav-lbl">متابعة العملاء<em>Clients</em></span></button>
+      <button class="nav-item" data-view="nutrition"><span class="nav-ico">🥗</span><span class="nav-lbl">التغذية والحميات<em>Nutrition</em></span></button>
+      <button class="nav-item" data-view="three"><span class="nav-ico">🎮</span><span class="nav-lbl">المختبر ثلاثي الأبعاد<em>3D Studio</em></span></button>
+      <button class="nav-item" data-view="settings"><span class="nav-ico">⚙️</span><span class="nav-lbl">الإعدادات<em>Settings</em></span></button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div class="stat-mini">
+        <div><b id="miniEx">0</b><span>تمرين</span></div>
+        <div><b id="miniPlans">0</b><span>خطة</span></div>
+        <div><b id="miniClients">0</b><span>عميل</span></div>
+      </div>
+    </div>
+  </aside>
+
+  <button class="nav-toggle" id="navToggle" aria-label="القائمة">☰</button>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-head">
+        <img class="topbar-logo" src="assets/img/logo.png" alt="" onerror="this.remove()">
+        <div>
+          <h1 id="viewTitle">لوحة التحكم</h1>
+          <p id="viewSub">Dashboard</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <div class="search-global">
+          <input type="search" id="globalSearch" placeholder="بحث سريع… (تمرين / عميل / خطة)">
+        </div>
+        <button class="btn btn-ghost" id="btnTheme" title="تبديل الثيم">🎨 <span id="themeName">داكن</span></button>
+        <button class="btn btn-ghost" id="btnBackup" title="تصدير نسخة احتياطية">⬇️ تصدير</button>
+        <button class="btn btn-ghost" id="btnRestore" title="استيراد نسخة احتياطية">⬆️ استيراد</button>
+        <input type="file" id="fileRestore" accept="application/json" hidden>
+      </div>
+    </header>
+
+    <div class="views" id="views">
+
+      <!-- ============ DASHBOARD ============ -->
+      <section class="view active" id="view-dashboard">
+        <div class="cards" id="dashCards"></div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-hd"><h2>ملخص نشاطك <em>Your activity</em></h2></div>
+            <div class="panel-bd" id="dashActivity"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd"><h2>إجراءات سريعة <em>Quick actions</em></h2></div>
+            <div class="panel-bd quick-actions">
+              <button class="qa" data-go="exercises"><span>🏋️</span>تصفّح التمارين<em>Exercise library</em></button>
+              <button class="qa" data-go="plans" data-act="new"><span>📋</span>إنشاء خطة جديدة<em>New plan</em></button>
+              <button class="qa" data-go="clients" data-act="new"><span>➕</span>إضافة عميل<em>Add client</em></button>
+              <button class="qa" data-go="nutrition"><span>🥗</span>حساب السعرات<em>Calorie calculator</em></button>
+              <button class="qa" data-go="three"><span>🎮</span>المختبر ثلاثي الأبعاد<em>3D studio</em></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-hd"><h2>خطة اليوم — تمارين مقترحة <em>Today's suggested session</em></h2></div>
+          <div class="panel-bd" id="dashToday"></div>
+        </div>
+      </section>
+
+      <!-- ============ EXERCISES ============ -->
+      <section class="view" id="view-exercises">
+        <div class="toolbar">
+          <div class="filters">
+            <input type="search" id="exSearch" placeholder="ابحث باسم التمرين… / search exercise">
+            <select id="exMuscle">
+              <option value="">كل العضلات / All muscles</option>
+            </select>
+            <select id="exEquip">
+              <option value="">كل الأجهزة / Equipment</option>
+            </select>
+            <select id="exLevel">
+              <option value="">كل المستويات / Level</option>
+            </select>
+            <select id="exType">
+              <option value="">النوع / Type</option>
+            </select>
+          </div>
+          <div class="filters">
+            <button class="btn btn-soft" id="btnExToggleFav">★ المفضلة</button>
+            <button class="btn btn-primary" id="btnAddEx">+ تمرين مخصص</button>
+          </div>
+        </div>
+        <div class="chips" id="exChips"></div>
+        <div class="grid-3" id="exGrid"></div>
+      </section>
+
+      <!-- ============ PLANS ============ -->
+      <section class="view" id="view-plans">
+        <div class="toolbar">
+          <div class="filters">
+            <select id="planFilter">
+              <option value="">كل الخطط / All plans</option>
+            </select>
+            <select id="planSort">
+              <option value="new">الأحدث أولاً</option>
+              <option value="name">الاسم</option>
+            </select>
+          </div>
+          <div class="filters">
+            <button class="btn btn-soft" id="btnPlanTemplates">🧩 قوالب جاهزة</button>
+            <button class="btn btn-primary" id="btnNewPlan">+ خطة جديدة</button>
+            <button class="btn btn-soft" id="btnNewTextPlan" title="اكتب أو الصق البرنامج التدريبي بنفسك">✍️ خطة نصية</button>
+          </div>
+        </div>
+        <div class="grid-3" id="planGrid"></div>
+      </section>
+
+      <!-- ============ CLIENTS ============ -->
+      <section class="view" id="view-clients">
+        <div class="toolbar">
+          <div class="filters">
+            <input type="search" id="clientSearch" placeholder="ابحث عن عميل…">
+            <select id="clientGoal"><option value="">كل الأهداف / Goals</option></select>
+          </div>
+          <div class="filters">
+            <button class="btn btn-primary" id="btnAddClient">+ عميل جديد</button>
+          </div>
+        </div>
+        <div class="grid-3" id="clientGrid"></div>
+      </section>
+
+      <!-- ============ NUTRITION ============ -->
+      <section class="view" id="view-nutrition">
+        <div class="tabs" id="nutTabs">
+          <button class="tab active" data-tab="calc">حاسبة السعرات<em>Calculator</em></button>
+          <button class="tab" data-tab="diets">الحميات الجاهزة<em>Diet templates</em></button>
+          <button class="tab" data-tab="foods">جدول الأطعمة<em>Food table</em></button>
+          <button class="tab" data-tab="day">خطة اليوم<em>Today's meals</em></button>
+        </div>
+
+        <div class="tab-pane active" id="tab-calc">
+          <div class="grid-2">
+            <div class="panel">
+              <div class="panel-hd"><h2>بيانات العميل <em>Client data</em></h2></div>
+              <div class="panel-bd">
+                <div class="form-grid">
+                  <label>الجنس / Gender
+                    <select id="nSex"><option value="m">ذكر Male</option><option value="f">أنثى Female</option></select>
+                  </label>
+                  <label>العمر / Age<input type="number" id="nAge" value="28" min="14" max="80"></label>
+                  <label>الطول (سم) / Height<input type="number" id="nHeight" value="175" min="120" max="230"></label>
+                  <label>الوزن (كجم) / Weight<input type="number" id="nWeight" value="78" min="35" max="250"></label>
+                  <label>مستوى النشاط / Activity
+                    <select id="nAct">
+                      <option value="1.2">خامل (مكتب) Sedentary</option>
+                      <option value="1.375">نشاط خفيف Light</option>
+                      <option value="1.55" selected>متوسط (3-5 أيام) Moderate</option>
+                      <option value="1.725">عالٍ (6-7 أيام) Active</option>
+                      <option value="1.9">رياضي محترف Athlete</option>
+                    </select>
+                  </label>
+                  <label>الهدف / Goal
+                    <select id="nGoal">
+                      <option value="cut">خسارة دهون Fat loss</option>
+                      <option value="maintain">ثبات Maintain</option>
+                      <option value="bulk">تضخيم Muscle gain</option>
+                      <option value="strength">قوة Strength</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="chk"><input type="checkbox" id="nBF"> إدخال نسبة الدهون يدوياً (اختياري)</label>
+                <div class="form-grid" id="nBFWrap" hidden>
+                  <label>نسبة الدهون % / Body fat<input type="number" id="nBFVal" value="20" min="4" max="60"></label>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><h2>النتائج <em>Results</em></h2></div>
+              <div class="panel-bd" id="calcResults"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="tab-diets"><div class="grid-3" id="dietGrid"></div></div>
+
+        <div class="tab-pane" id="tab-foods">
+          <div class="toolbar">
+            <div class="filters">
+              <input type="search" id="foodSearch" placeholder="ابحث عن طعام…">
+              <select id="foodCat"><option value="">كل الفئات / Categories</option></select>
+            </div>
+            <div class="filters"><button class="btn btn-primary" id="btnAddFood">+ طعام جديد</button></div>
+          </div>
+          <div class="panel"><div class="panel-bd table-wrap"><table class="table" id="foodTable"></table></div></div>
+        </div>
+
+        <div class="tab-pane" id="tab-day">
+          <div class="panel">
+            <div class="panel-hd">
+              <h2>مولّد خطة اليوم <em>Daily meal plan</em></h2>
+              <div class="filters">
+                <button class="btn btn-soft" id="btnGenDay">🎲 توليد</button>
+                <button class="btn btn-ghost" id="btnPrintDay">🖨️ طباعة</button>
+              </div>
+            </div>
+            <div class="panel-bd" id="dayPlan"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 3D STUDIO ============ -->
+      <section class="view" id="view-three">
+        <div class="tabs" id="threeTabs">
+          <button class="tab active" data-tab="anatomy">جسم العضلات<em>3D Anatomy</em></button>
+          <button class="tab" data-tab="anim">أنيميشن التمارين<em>Motion Lab</em></button>
+          <button class="tab" data-tab="plates">حاسبة الأثقال<em>Plate loader</em></button>
+        </div>
+
+        <!-- --- Anatomy --- -->
+        <div class="tab-pane active" id="tp-anatomy">
+          <div class="three-layout">
+            <div class="panel stage-panel">
+              <div class="panel-hd">
+                <h2>⠿ نموذج العضلات <em>اضغط على أي عضلة لعرض تمارينها</em></h2>
+                <div class="filters">
+                  <button class="btn btn-sm btn-soft" id="btnAutoRot">⟳ دوران تلقائي</button>
+                  <button class="btn btn-sm btn-ghost" id="btnCamReset">⌂ إعادة الضبط</button>
+                </div>
+              </div>
+              <div class="stage" id="stageAnatomy">
+                <canvas id="cvAnatomy"></canvas>
+                <div class="stage-badge" id="aBadge">—</div>
+                <div class="stage-hint">اسحب للتدوير · عجلة الفأرة/الإصبع للتقريب · اضغط على عضلة</div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><h2 id="aTitle">اختر عضلة من النموذج</h2></div>
+              <div class="panel-bd" id="aInfo">
+                <p class="muted" style="margin-top:0">حرّك المجسم واضغط على أي مجموعة عضلية
+                  (بالأزرار أو باللمس) لتظهر لك قائمتها من التمارين مع إمكانية إضافتها مباشرة لأي خطة.</p>
+                <div class="muscle-list" id="aChips"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- --- Motion lab --- -->
+        <div class="tab-pane" id="tp-anim">
+          <div class="three-layout">
+            <div class="panel stage-panel">
+              <div class="panel-hd">
+                <h2>⠿ مختبر الحركة <em>صيغة التنفيذ بشكل متحرك</em></h2>
+                <div class="filters" id="animChips"></div>
+              </div>
+              <div class="stage" id="stageAnim">
+                <canvas id="cvAnim"></canvas>
+                <div class="stage-hint">اسحب للتدوير حول المشهد</div>
+              </div>
+              <div class="panel-bd anim-controls">
+                <button class="btn btn-primary" id="btnPlay">⏸ إيقاف مؤقت</button>
+                <label class="speed">السرعة
+                  <input type="range" id="rngSpeed" min="0.3" max="2.5" step="0.1" value="1">
+                  <b id="speedVal">1.0×</b>
+                </label>
+                <div class="rep-counter">التكرار <b id="repCount">0</b></div>
+                <div class="progress"><div id="repBar"></div></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><h2 id="anTitle">—</h2></div>
+              <div class="panel-bd" id="anInfo"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- --- Plate loader --- -->
+        <div class="tab-pane" id="tp-plates">
+          <div class="three-layout">
+            <div class="panel stage-panel">
+              <div class="panel-hd"><h2>⠿ بارا الأثقال <em>اضبط الوزن وشاهد التوزيع</em></h2></div>
+              <div class="stage" id="stagePlates">
+                <canvas id="cvPlates"></canvas>
+                <div class="stage-hint">اسحب للتدوير · عجلة الفأرة للتقريب</div>
+              </div>
+              <div class="panel-bd">
+                <label class="speed">الوزن الإجمالي: <b id="plateTotal">60</b> كجم
+                  <input type="range" id="rngPlates" min="20" max="320" step="2.5" value="60">
+                </label>
+                <div class="filters" style="margin-top:12px">
+                  <button class="btn btn-sm btn-soft" data-bar="20">بارا رجالي · 20كجم</button>
+                  <button class="btn btn-sm btn-ghost" data-bar="15">بارا نسائي · 15كجم</button>
+                </div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-hd"><h2>توزيع الأوزان <em>Plate math</em></h2></div>
+              <div class="panel-bd" id="plateInfo"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SETTINGS ============ -->
+      <section class="view" id="view-settings">
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-hd"><h2>بياناتك كمدرب <em>Trainer profile</em></h2></div>
+            <div class="panel-bd">
+              <div class="form-grid">
+                <label>الاسم / Name<input type="text" id="setName" placeholder="اسم المدرب"></label>
+                <label>اسم النادي / Gym<input type="text" id="setGym" placeholder="اسم الجيم"></label>
+                <label>الهاتف / Phone<input type="text" id="setPhone" placeholder="رقم التواصل"></label>
+              </div>
+              <button class="btn btn-primary" id="btnSaveSettings">حفظ</button>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-hd"><h2>النسخ الاحتياطي <em>Backup & restore</em></h2></div>
+            <div class="panel-bd">
+              <p class="muted">كل بياناتك محفوظة داخل متصفحك (Local Storage). صدّر نسخة احتياطية دورياً لحمايتها.</p>
+              <div class="filters" style="margin-top:12px">
+                <button class="btn btn-primary" id="btnExport2">⬇️ تصدير JSON</button>
+                <button class="btn btn-soft" id="btnImport2">⬆️ استيراد</button>
+                <button class="btn btn-danger" id="btnReset">🗑️ تصفير كل البيانات</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-hd"><h2>المظهر والثيمات <em>Appearance & themes</em></h2></div>
+          <div class="panel-bd">
+            <div class="theme-grid" id="themeGrid"></div>
+            <p class="theme-note">يُحفظ الثيم المختار تلقائياً ويطبق على كل الشاشات والرسوم والتقارير المطبوعة.</p>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===== Modal ===== -->
+<div class="modal-backdrop" id="modalBackdrop" hidden>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-hd">
+      <h3 id="modalTitle">عنوان</h3>
+      <button class="modal-x" id="modalClose">✕</button>
+    </div>
+    <div class="modal-bd" id="modalBody"></div>
+    <div class="modal-ft" id="modalFoot"></div>
+  </div>
+</div>
+
+<!-- ===== Drawer (exercise / client detail) ===== -->
+<div class="drawer-backdrop" id="drawerBackdrop" hidden>
+  <aside class="drawer" id="drawer">
+    <div class="modal-hd">
+      <h3 id="drawerTitle">تفاصيل</h3>
+      <button class="modal-x" id="drawerClose">✕</button>
+    </div>
+    <div class="drawer-bd" id="drawerBody"></div>
+  </aside>
+</div>
+
+<div class="toasts" id="toasts"></div>
+<div id="printArea" class="print-area"></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/ui.js"></script>
+<script src="assets/js/views-exercises.js"></script>
+<script src="assets/js/views-plans.js"></script>
+<script src="assets/js/views-clients.js"></script>
+<script src="assets/js/views-nutrition.js"></script>
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/js/view-3d.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
