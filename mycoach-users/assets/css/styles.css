@@ -389,9 +389,6 @@ textarea.free-plan{min-height:280px;line-height:1.9;font-size:14px}
   .app,.toasts,.modal-backdrop,.drawer-backdrop,.nav-toggle{display:none !important}
   .print-area{display:block;padding:20px;font-family:var(--ff)}
   .print-area h1{font-size:22px;margin-bottom:4px}
-  .print-area::after{content:"مدربي · MyCoach — المُنشئ والمسؤول: EMAD ALDEEN";display:block;
-    margin-top:14px;padding-top:6px;border-top:1px solid #ccc;font-size:10px;color:#666;
-    text-align:center;letter-spacing:.3px}
   .print-area h1:first-of-type::before{content:url("../img/logo.png");display:inline-block;
     width:34px;height:34px;margin-inline-end:10px;vertical-align:-9px;border-radius:8px}
   .print-area .p-sub{color:#555;font-size:12px;margin-bottom:14px}
@@ -439,14 +436,6 @@ body.auth-locked .app,body.auth-locked .nav-toggle{display:none !important}
 .lock-link:hover{text-decoration:underline}
 .lock-foot{margin-top:14px;border-top:1px dashed var(--line);padding-top:10px}
 .lock-note{font-size:11.5px;color:var(--muted);text-align:center;margin:0;line-height:1.7}
-.lock-credit{margin-top:10px;text-align:center;font-size:11.5px;color:var(--muted);letter-spacing:.2px}
-.lock-credit b{color:var(--brand2);font-weight:800;letter-spacing:.6px}
-.about-row{display:flex;gap:14px;align-items:flex-start}
-.about-logo{width:58px;height:58px;border-radius:14px;flex:none;object-fit:contain;box-shadow:0 6px 18px rgba(0,0,0,.3)}
-.about-row h3{margin:0 0 4px;font-size:16px}
-.about-row p{margin:0 0 6px;font-size:13px;line-height:1.7;color:var(--muted)}
-.about-row .creator{font-size:13.5px;color:var(--txt)}
-.about-row .creator b{color:var(--brand);font-weight:900;letter-spacing:.6px}
 .code-box{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;
   background:color-mix(in srgb,var(--brand) 12%,transparent);border:1px dashed var(--brand);
   border-radius:12px;padding:14px 16px;margin-top:6px}
