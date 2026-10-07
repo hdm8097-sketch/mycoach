@@ -214,10 +214,11 @@ const Auth = (() => {
       foot.innerHTML = `<p class="lock-note">لم تحصل على رمز استعادة؟ اطلب من المالك إعادة تعيين رمزك.</p>`;
     } else {
       const A = a();
+      const only = A.users.length === 1 ? ` value="${esc(A.users[0].user)}"` : "";
       box.innerHTML = `
         <h2 class="lock-h">تسجيل الدخول 🔐</h2>
         <p class="lock-sub">أدخل اسم المستخدم والرمز السري للمتابعة.</p>
-        <label>اسم المستخدم<input id="lkUser" autocomplete="off" autocapitalize="off" placeholder="اسم الدخول"></label>
+        <label>اسم المستخدم<input id="lkUser" autocomplete="off" autocapitalize="off" placeholder="اسم الدخول"${only}></label>
         <label>الرمز السري<input id="lkPass" type="password" placeholder="••••••"></label>
         <button class="btn btn-primary lock-btn" id="lkGo">دخول</button>
         <p class="lock-err" id="lkErr" hidden></p>
@@ -277,7 +278,7 @@ const Auth = (() => {
     const pass2 = $("#lkPass2").value || "";
     clearErr();
     if (name.length < 3) return err("اكتب اسمك الكامل (3 أحرف على الأقل).");
-    if (!/^[a-z0-9._-]{3,20}$/i.test(uname)) return err("اسم المستخدم: حروف إنجليزية وأرقام فقط (3–20).");
+    if (!/^[a-z0-9._\- ]{3,24}$/i.test(uname)) return err("اسم المستخدم: حروف وأرقام ومسافات فقط (3–24).");
     if (!validPass(pass)) return err("الرمز السري: 6 خانات على الأقل.");
     if (pass !== pass2) return err("الرمزان غير متطابقين.");
     const A = a();
@@ -305,7 +306,7 @@ const Auth = (() => {
       startCooldown();
       return err("⌛ محاولات كثيرة — أعد المحاولة بعد " + Math.ceil(lockRemain() / 1000) + " ثانية");
     }
-    const u = A.users.find(x => x.user === uname);
+    const u = A.users.find(x => String(x.user || "").toLowerCase() === uname);
     const okUser = !!u;
     const okPass = okUser && u.pass === hashPass(pass, u.salt);
     if (!okUser || !okPass) {
@@ -383,9 +384,30 @@ const Auth = (() => {
     UI.toast("تم قفل البرنامج 🔒");
   }
 
+  /* حساب المالك الوحيد المضمّن في الكود (الرمز مخزّن مجزّأاً فقط — لا يظهر نصاً) */
+  const OWNER = {
+    name: "Emad Al-Deen",
+    user: "Emad Al-Deen",
+    salt: "mycoach-emad-1995-salt",
+    pass: "433e564dcec06e127220335a347cdec358d0de0fe1b092533b3712f2d14faef0"
+  };
+
+  /* بذور حساب المالك تلقائياً عند أول فتح — لا توجد شاشة إنشاء هنا */
+  function seedOwner() {
+    const A = a();
+    if (A.users.length) return;
+    A.users.push({
+      id: Store.uid("u"), name: OWNER.name, user: OWNER.user,
+      salt: OWNER.salt, pass: OWNER.pass,
+      role: "owner", active: true, created: Date.now(), last: null
+    });
+    allow();
+  }
+
   /* نقطة الدخول — تُستدعى من تهيئة التطبيق */
   function gate(startApp) {
     nextFn = startApp;
+    seedOwner();
     const A = a();
     if (!A.users.length) return show("setup");
     const s = A.session;
@@ -539,7 +561,7 @@ const Auth = (() => {
         const role = $("#uRole").value;
         const active = $("#uActive").checked;
         if (name.length < 3) return UI.toast("اكتب الاسم الكامل", "err");
-        if (!/^[a-z0-9._-]{3,20}$/.test(uname)) return UI.toast("اسم المستخدم: حروف إنجليزية وأرقام (3–20)", "err");
+        if (!/^[a-z0-9._\- ]{3,24}$/.test(uname)) return UI.toast("اسم المستخدم: حروف وأرقام ومسافات (3–24)", "err");
         if (A.users.some(x => x.user === uname && (!u || x.id !== u.id))) return UI.toast("اسم الدخول مستخدم بالفعل", "err");
         if (!u && !validPass(pass)) return UI.toast("الرمز السري: 6 خانات على الأقل", "err");
         if (u && pass && !validPass(pass)) return UI.toast("الرمز الجديد: 6 خانات على الأقل", "err");
