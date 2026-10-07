@@ -14,7 +14,8 @@ const Store = (() => {
     clients: [],
     customFoods: [],
     dayPlan: null,
-    activity: []
+    activity: [],
+    auth: null
   });
 
   function load() {
@@ -29,6 +30,8 @@ const Store = (() => {
 
   let warned = false;
   function save() {
+    /* حارس الصلاحيات: المستخدم بصلاحية «قراءة فقط» لا يستطيع حفظ أي تعديل */
+    if (window.Auth && !Auth.saveAllowed()) { Auth.blocked(); return; }
     try { localStorage.setItem(KEY, JSON.stringify(state)); }
     catch (e) {
       if (!warned) { warned = true; UI.toast("تنبيه: التخزين غير متاح في هذا المتصفح — لن تُحفظ البيانات بعد إغلاق الصفحة", "warn"); }

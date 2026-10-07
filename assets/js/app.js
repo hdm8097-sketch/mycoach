@@ -9,6 +9,7 @@ const App = (() => {
     clients: ["متابعة العملاء", "Clients — measurements, attendance, sessions"],
     nutrition: ["التغذية والحميات", "Nutrition — calories, macros, meal plans"],
     three: ["المختبر ثلاثي الأبعاد", "3D studio — anatomy, motion lab & plate loader"],
+    users: ["المستخدمون والصلاحيات", "Users — accounts, roles & login attempts"],
     settings: ["الإعدادات", "Trainer profile & backup"]
   };
   let current = "dashboard";
@@ -16,6 +17,7 @@ const App = (() => {
   /* ---------- التوجيه ---------- */
   function go(view) {
     if (!TITLES[view]) view = "dashboard";
+    if (view === "users" && (!window.Auth || !Auth.can("users"))) view = "dashboard";
     current = view;
     UI.$$(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.view === view));
     UI.$$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + view));
@@ -33,6 +35,7 @@ const App = (() => {
     if (view === "plans") Plans.render();
     if (view === "clients") Clients.render();
     if (view === "three") View3D.render();
+    if (view === "users" && window.Auth) Auth.renderUsers();
     if (view === "settings") settings();
   }
 
@@ -155,10 +158,19 @@ const App = (() => {
   }
 
   function restore(file) {
+    if (window.Auth && !Auth.can("settings")) return UI.toast("🔒 الاستيراد من صلاحيات المالك", "err");
     const r = new FileReader();
     r.onload = () => {
       try {
         Store.import(JSON.parse(r.result));
+        /* إن اختفى حسابك الحالي مع الاستيراد → أعد تحميل الصفحة لشاشة الدخول */
+        const me = window.Auth && Auth.user();
+        const au = Store.get().auth;
+        if (window.Auth && (!me || !au || !Array.isArray(au.users) || !au.users.some(u => u.id === me.id))) {
+          UI.toast("استُوردت البيانات — سجّل الدخول من جديد", "warn");
+          setTimeout(() => location.reload(), 900);
+          return;
+        }
         refreshSidebar(); go(current);
         UI.toast("تم استيراد البيانات بنجاح ✓");
       } catch (e) { UI.toast("ملف غير صالح: " + e.message, "err"); }
@@ -189,7 +201,9 @@ const App = (() => {
 
   function setTheme(key) {
     const s = Store.get().settings;
-    s.theme = key; Store.save();
+    s.theme = key;
+    /* تغيير الثيم مسموح للجميع حتى بصلاحية «قراءة فقط» (تفضيل شخصي تجميلي) */
+    if (window.Auth) Auth.bypass(() => Store.save()); else Store.save();
     applyTheme(key);
     const active = document.querySelector(".view.active");
     if (active && active.id === "view-settings") settings();
@@ -218,6 +232,12 @@ const App = (() => {
     UI.$("#setName").value = s.trainer || "";
     UI.$("#setGym").value = s.gym || "";
     UI.$("#setPhone").value = s.phone || "";
+    /* الصلاحيات: تعديل بيانات المدرب / الاستيراد / التصفير للمالك فقط */
+    const canS = !window.Auth || Auth.can("settings");
+    ["#setName", "#setGym", "#setPhone"].forEach(id => { const e = UI.$(id); if (e) e.disabled = !canS; });
+    ["#btnSaveSettings", "#btnImport2", "#btnReset"].forEach(id => {
+      const e = UI.$(id); if (e) e.style.display = canS ? "" : "none";
+    });
     const grid = UI.$("#themeGrid");
     if (grid) {
       grid.innerHTML = themeCards();
@@ -231,6 +251,12 @@ const App = (() => {
   /* ---------- التشغيل ---------- */
   function init() {
     Store.load();
+    /* حارس الدخول: لا يبدأ أي شيء قبل تسجيل الدخول بنجاح */
+    if (window.Auth) Auth.gate(boot);
+    else boot();
+  }
+
+  function boot() {
     refreshSidebar();
     applyTheme(currentTheme());
 
@@ -279,6 +305,9 @@ const App = (() => {
     // الثيم السريع من الشريط العلوي
     UI.$("#btnTheme").onclick = cycleTheme;
 
+    // قفل البرنامج / تسجيل الخروج
+    if (window.Auth && UI.$("#btnLock")) UI.$("#btnLock").onclick = () => Auth.lock();
+
     // نسخ احتياطي
     UI.$("#btnBackup").onclick = backup;
     UI.$("#btnExport2").onclick = backup;
@@ -289,6 +318,7 @@ const App = (() => {
       () => { Store.reset(); refreshSidebar(); go("dashboard"); UI.toast("تم تصفير البيانات", "warn"); });
 
     UI.$("#btnSaveSettings").onclick = () => {
+      if (window.Auth && !Auth.can("settings")) return UI.toast("🔒 تعديل بيانات المدرب للمالك فقط", "err");
       const s = Store.get().settings;
       s.trainer = UI.$("#setName").value.trim();
       s.gym = UI.$("#setGym").value.trim();

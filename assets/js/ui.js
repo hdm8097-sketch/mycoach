@@ -22,6 +22,11 @@ const UI = (() => {
   /* ---------- Modal ---------- */
   let onSave = null;
   function modal({ title, body, saveText = "حفظ", cancelText = "إلغاء", onSave: cb, wide = false, hideSave = false }) {
+    /* حارس الصلاحيات: المودالات التي فيها زر حفظ = تعديل، ويجب أن يملك المستخدم صلاحية ذلك */
+    if (!hideSave && window.Auth && !Auth.can("edit")) {
+      UI.toast("🔒 صلاحيتك «قراءة فقط» — لا يمكنك التعديل", "err");
+      return;
+    }
     $("#modalTitle").textContent = title;
     $("#modalBody").innerHTML = body;
     $("#modalFoot").innerHTML = hideSave
