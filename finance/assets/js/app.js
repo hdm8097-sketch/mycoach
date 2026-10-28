@@ -211,7 +211,7 @@ const App = (() => {
     if (!due.length) return;
     due.forEach(r => Recurring.run(d, r.id));
     await save();
-    setTimeout(() => U.toast(`⏰ ${t('runAll')} (${due.length})`, 'info'), 900);
+    setTimeout(() => U.toast(`${icHTML('recurring')} ${t('runAll')} (${due.length})`, 'info'), 900);
   }
 
   function lock() {
