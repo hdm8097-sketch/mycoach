@@ -6,13 +6,22 @@ const U = (() => {
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
   /* --- DOM --- */
-  /* أيقونات SVG ضمن نصوص — تُحلَّل وتُنقّى من أي وسم غير آمن */
-  const SVG_TAGS = new Set(['svg', 'g', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse']);
+  /* أيقونات SVG ضمن نصوص — تُحلَّل وتُنقّى من أي وسم غير آمن
+     تشمل أيقونات Multicolor: <defs>/<mask>/<clipPath>/<use> + مراجعها */
+  const SVG_TAGS = new Set([
+    'svg', 'g', 'path', 'circle', 'rect', 'line', 'polyline', 'polygon', 'ellipse',
+    'defs', 'mask', 'clippath', 'use', 'symbol', 'lineargradient', 'radialgradient', 'stop', 'title', 'desc',
+  ]);
   const SVG_ATTRS = new Set([
     'class', 'viewbox', 'width', 'height', 'style', 'aria-hidden', 'xmlns',
     'd', 'fill', 'stroke', 'stroke-width', 'stroke-linecap', 'stroke-linejoin',
     'opacity', 'transform', 'fill-rule', 'clip-rule', 'points',
     'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy', 'r', 'rx', 'ry',
+    /* معرفات ومراجع (آمنة بعد التطبيع في build-mc-icons) */
+    'id', 'offset', 'stop-color', 'stop-opacity', 'gradientunits', 'gradienttransform',
+    'maskunits', 'maskcontentunits', 'clip-path', 'href', 'xlink:href',
+    'mask', 'refx', 'refy', 'orient', 'markerstart', 'markermid', 'markerend',
+    'preserveaspectratio', 'vector-effect', 'stroke-opacity', 'fill-opacity', 'stroke-dasharray',
   ]);
   function svgFragment(html) {
     const tpl = document.createElement('template');

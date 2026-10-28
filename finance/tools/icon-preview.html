@@ -1,0 +1,106 @@
+<!doctype html>
+<!-- معاينة أيقونات Multicolor — أداة تطوير فقط (غير منشورة في السايت) -->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>معاينة أيقونات — ميزانيتي</title>
+<style>
+  :root { --bg:#f4f5fa; --card:#fff; --text:#1c2333; --sub:#6b7280; --border:#e6e8f2; }
+  [data-theme="dark"] { --bg:#0f1524; --card:#161d31; --text:#eef1f9; --sub:#9aa3b8; --border:#253047; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; background:var(--bg); color:var(--text); }
+  header { position:sticky; top:0; z-index:5; background:var(--card); border-bottom:1px solid var(--border); padding:14px 18px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  h1 { font-size:17px; margin:0; }
+  .count { color:var(--sub); font-size:13px; }
+  .spacer { flex:1; }
+  button { font:inherit; padding:7px 14px; border-radius:10px; border:1px solid var(--border); background:var(--card); color:var(--text); cursor:pointer; font-weight:700; }
+  button.primary { background:#7c56f2; border-color:#7c56f2; color:#fff; }
+  input[type=search] { font:inherit; padding:7px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg); color:var(--text); min-width:180px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(118px,1fr)); gap:12px; padding:18px; }
+  .cell { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px 8px 12px; text-align:center; }
+  .cell .ic { width:34px; height:34px; }
+  .cell .nm { margin-top:10px; font-size:11.5px; color:var(--sub); word-break:break-all; direction:ltr; }
+  .cell.solar .ic { color:var(--text); }
+  /* شريط علوي ملوّن لاختبار التباين على خلفيات متدرجة */
+  .strip { display:flex; gap:10px; padding:0 18px 4px; flex-wrap:wrap; }
+  .chip { display:flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; color:#fff; font-size:12.5px; font-weight:700; }
+  .chip .ic { width:20px; height:20px; color:#fff; }
+</style>
+</head>
+<body data-theme="light">
+<header>
+  <h1>أيقونات Multicolor — معاينة</h1>
+  <span class="count" id="cnt"></span>
+  <span class="spacer"></span>
+  <input type="search" id="q" placeholder="ابحث عن أيقونة…">
+  <button id="theme">الثيم الداكن</button>
+  <button id="toggle" class="primary">إظهار Solar للمقارنة</button>
+</header>
+<div class="strip" id="strip"></div>
+<div class="grid" id="grid"></div>
+
+<script src="../assets/js/icons-mc.js"></script>
+<script src="../assets/js/icons.js"></script>
+<script>
+(function () {
+  var grid = document.getElementById('grid');
+  var cnt = document.getElementById('cnt');
+  var q = document.getElementById('q');
+  var showSolar = false;
+  var keys = Object.keys(IconsMC);
+  cnt.textContent = keys.length + ' أيقونة';
+
+  // شريط تدرجات لاختبار التباين
+  var strips = [
+    ['linear-gradient(135deg,#7c56f2,#a78bfa)', 'violet'],
+    ['linear-gradient(135deg,#14b8a6,#5eead4)', 'teal'],
+    ['linear-gradient(135deg,#ec4899,#f9a8d4)', 'pink'],
+    ['linear-gradient(135deg,#3b82f6,#93c5fd)', 'blue'],
+  ];
+  var strip = document.getElementById('strip');
+  strips.forEach(function (s) {
+    var d = document.createElement('div');
+    d.className = 'chip';
+    d.style.background = s[0];
+    d.innerHTML = ic('wallet') .outerHTML + '<span>' + s[1] + '</span>';
+    strip.appendChild(d);
+  });
+
+  function render() {
+    var term = (q.value || '').toLowerCase().trim();
+    grid.innerHTML = '';
+    var shown = 0;
+    keys.forEach(function (k) {
+      if (term && k.indexOf(term) === -1) return;
+      shown++;
+      var cell = document.createElement('div');
+      cell.className = 'cell' + (showSolar ? ' solar' : '');
+      var a = showSolar ? icSolar(k) : ic(k);
+      cell.appendChild(a);
+      var nm = document.createElement('div');
+      nm.className = 'nm';
+      nm.textContent = k;
+      cell.appendChild(nm);
+      grid.appendChild(cell);
+    });
+    cnt.textContent = shown + ' / ' + keys.length + ' أيقونة';
+  }
+
+  q.addEventListener('input', render);
+  document.getElementById('theme').addEventListener('click', function () {
+    var b = document.body;
+    var dark = b.getAttribute('data-theme') === 'dark';
+    b.setAttribute('data-theme', dark ? 'light' : 'dark');
+    this.textContent = dark ? 'الثيم الداكن' : 'الثيم الفاتح';
+  });
+  document.getElementById('toggle').addEventListener('click', function () {
+    showSolar = !showSolar;
+    this.textContent = showSolar ? 'إظهار الملوّنة' : 'إظهار Solar للمقارنة';
+    render();
+  });
+  render();
+})();
+</script>
+</body>
+</html>

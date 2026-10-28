@@ -102,7 +102,8 @@ const Icons = {
 };
 
 /* عنصر SVG جاهز */
-function ic(name, cls, size) {
+/* المولّد الأصلي: أيقونات Solar أحادية اللون (احتياط لكلمة غير متوفرة بالملوّنة) */
+function icSolar(name, cls, size) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   svg.setAttribute('viewBox', '0 0 24 24');
   svg.setAttribute('class', 'ic' + (cls ? ' ' + cls : ''));
@@ -111,10 +112,27 @@ function ic(name, cls, size) {
   svg.innerHTML = Icons[name] || Icons.box || '';
   return svg;
 }
-/* نص HTML جايز للقوالب النصية */
+/* أيقونة: تُفضَّل النسخة الملوّنة (SVG Repo Multicolor) ثم Solar كاحتياط */
+function ic(name, cls, size) {
+  const mc = (typeof IconsMC !== 'undefined' && IconsMC[name]);
+  if (!mc) return icSolar(name, cls, size);
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', mc.vb || '0 0 24 24');
+  svg.setAttribute('class', 'ic' + (cls ? ' ' + cls : ''));
+  svg.setAttribute('aria-hidden', 'true');
+  if (size) { svg.style.width = size + 'px'; svg.style.height = size + 'px'; }
+  svg.innerHTML = mc.s || '';
+  return svg;
+}
+/* نص HTML جايز للقوالب النصية — يفضَّل الملوّن ثم Solar */
 function icHTML(name, cls, size) {
   const s = size ? 'width:' + size + 'px;height:' + size + 'px;' : '';
-  return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true" style="' + s + '">' + (Icons[name] || Icons.box || '') + '</svg>';
+  const c = 'ic' + (cls ? ' ' + cls : '');
+  const mc = (typeof IconsMC !== 'undefined' && IconsMC[name]);
+  if (mc) {
+    return '<svg class="' + c + '" viewBox="' + (mc.vb || '0 0 24 24') + '" aria-hidden="true" style="' + s + '">' + (mc.s || '') + '</svg>';
+  }
+  return '<svg class="' + c + '" viewBox="0 0 24 24" aria-hidden="true" style="' + s + '">' + (Icons[name] || Icons.box || '') + '</svg>';
 }
 
 console.debug("[mizaniyati] icons loaded:", Object.keys(Icons).length);
