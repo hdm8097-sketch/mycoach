@@ -1,5 +1,5 @@
 /* ============================================================
-   ميزان | Mizan — التطبيق الرئيسي
+   ميزانيتي | MIZANIYATI — التطبيق الرئيسي
    شاشات القفل/الإنشاء، القائمة، التوجيه، القفل التلقائي، المزامنة
    ============================================================ */
 const App = (() => {
@@ -42,7 +42,7 @@ const App = (() => {
     const box = U.$('#lock-card');
     box.innerHTML = '';
     const logo = U.el('div', { class: 'auth-logo' },
-      U.el('img', { src: 'assets/img/icon-192.png', alt: 'Mizan', width: 84, height: 84, onerror: 'this.style.display="none"' }),
+      U.el('img', { src: 'assets/img/icon-192.png', alt: 'MIZANIYATI', width: 84, height: 84, onerror: 'this.style.display="none"' }),
       U.el('h1', {}, t('appName')),
       U.el('p', { class: 'muted' }, t('appTag')));
 

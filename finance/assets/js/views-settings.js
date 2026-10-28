@@ -1,5 +1,5 @@
 /* ============================================================
-   ميزان | Mizan — شاشة الإعدادات (ملف، مظهر، أمان، مزامنة، نسخ)
+   ميزانيتي | MIZANIYATI — شاشة الإعدادات (ملف، مظهر، أمان، مزامنة، نسخ)
    ============================================================ */
 const ViewSettings = {
   route: 'settings',
@@ -132,7 +132,7 @@ const ViewSettings = {
 
   /* ---------- المزامنة ---------- */
   sync(body, data) {
-    const s = data.sync || (data.sync = { enabled: false, owner: '', repo: 'mizan-vault', branch: 'main', pat: '', path: 'vault.enc.json', lastSync: 0, log: [] });
+    const s = data.sync || (data.sync = { enabled: false, owner: '', repo: 'mizaniyati-vault', branch: 'main', pat: '', path: 'vault.enc.json', lastSync: 0, log: [] });
     const status = U.el('div', { class: 'sync-status' });
     const renderStatus = (kind, text) => {
       status.innerHTML = '';
@@ -147,7 +147,7 @@ const ViewSettings = {
         U.el('label', { class: 'fld' }, t('ghOwner'),
           U.el('input', { class: 'input', name: 'owner', value: s.owner || '', placeholder: 'your-username', dir: 'ltr' })),
         U.el('label', { class: 'fld' }, t('ghRepo'),
-          U.el('input', { class: 'input', name: 'repo', value: s.repo || 'mizan-vault', dir: 'ltr' }))),
+          U.el('input', { class: 'input', name: 'repo', value: s.repo || 'mizaniyati-vault', dir: 'ltr' }))),
       U.el('div', { class: 'grid2' },
         U.el('label', { class: 'fld' }, t('ghBranch'),
           U.el('input', { class: 'input', name: 'branch', value: s.branch || 'main', dir: 'ltr' })),
@@ -161,7 +161,7 @@ const ViewSettings = {
       e.preventDefault();
       const fd = new FormData(form);
       s.owner = (fd.get('owner') || '').toString().trim().replace(/^@/, '');
-      s.repo = (fd.get('repo') || '').toString().trim() || 'mizan-vault';
+      s.repo = (fd.get('repo') || '').toString().trim() || 'mizaniyati-vault';
       s.branch = (fd.get('branch') || '').toString().trim() || 'main';
       s.pat = (fd.get('pat') || '').toString().trim();
       await App.save();
@@ -258,8 +258,8 @@ const ViewSettings = {
       U.el('div', { class: 'btn-row' },
         U.el('button', {
           class: 'btn btn-primary', onclick: () => {
-            const payload = { app: 'mizan', version: 1, exportedAt: new Date().toISOString(), data };
-            U.download(`mizan-backup-${U.todayISO()}.json`, JSON.stringify(payload, null, 2));
+            const payload = { app: 'mizaniyati', version: 1, exportedAt: new Date().toISOString(), data };
+            U.download(`mizaniyati-backup-${U.todayISO()}.json`, JSON.stringify(payload, null, 2));
             U.toast(t('saved'));
           },
         }, icHTML('download', 'btn-ic'), ' ', t('exportBackup')),
@@ -298,8 +298,8 @@ const ViewSettings = {
   about(body, data) {
     body.append(UIX.card(`${icHTML('info')} ${t('about')}`,
       U.el('div', { class: 'about' },
-        U.el('img', { src: 'assets/img/icon-192.png', alt: 'Mizan', width: 72, height: 72, onerror: 'this.style.display="none"' }),
-        U.el('h3', {}, `ميزان | Mizan`),
+        U.el('img', { src: 'assets/img/icon-192.png', alt: 'MIZANIYATI', width: 72, height: 72, onerror: 'this.style.display="none"' }),
+        U.el('h3', {}, `ميزانيتي | MIZANIYATI`),
         U.el('p', { class: 'muted' }, t('appTag')),
         U.el('div', { class: 'kv' },
           U.el('div', {}, U.el('span', {}, t('version')), U.el('b', {}, '1.0.0')),

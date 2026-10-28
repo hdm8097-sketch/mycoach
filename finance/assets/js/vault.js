@@ -1,5 +1,5 @@
 /* ============================================================
-   ميزان | Mizan — الخزنة المشفّرة (تشفير + تخزين + دخول)
+   ميزانيتي | MIZANIYATI — الخزنة المشفّرة (تشفير + تخزين + دخول)
    البيانات كلها مشفّرة بـ AES-256-GCM، والمفتاح مشتق من رمزك
    السري عبر PBKDF2 (250k جولة). رمز الطوارئ يلتفّ حول المفتاح.
    ============================================================ */
@@ -200,7 +200,7 @@ const Vault = (() => {
       updatedAt: now(),
       profile: { name: name || 'صاحب الخزنة', currency: currency || 'YER', savingsTarget: 20 },
       settings: { theme: 'light', autoLockMin: 15, lang: 'ar' },
-      sync: sync || { enabled: false, owner: '', repo: 'mizan-vault', branch: 'main', pat: '', path: 'vault.enc.json', lastSync: 0, log: [] },
+      sync: sync || { enabled: false, owner: '', repo: 'mizaniyati-vault', branch: 'main', pat: '', path: 'vault.enc.json', lastSync: 0, log: [] },
       accounts: [
         { id: 'acc_cash', nameAr: 'النقد', nameEn: 'Cash', type: 'cash', opening: 0, createdAt: now() },
       ],

@@ -1,5 +1,5 @@
 /* ============================================================
-   ميزان | Mizan — المزامنة عبر مستودع GitHub خاص
+   ميزانيتي | MIZANIYATI — المزامنة عبر مستودع GitHub خاص
    المحتوى المُرفع = ظرف الخزنة المشفّر (AES-256-GCM) — المستودع
    لا يحمل أي بيانات مقروءة. المفتاح محفوظ في الخزنة فقط.
    ============================================================ */
@@ -39,7 +39,7 @@ const Sync = (() => {
     return gh('GET', `/repos/${encodeURIComponent(c.owner)}/${encodeURIComponent(c.repo)}`, c.pat);
   }
   async function createRepo(c, desc) {
-    const r = await gh('POST', '/user/repos', c.pat, { name: c.repo, private: true, description: desc || 'Mizan encrypted vault' });
+    const r = await gh('POST', '/user/repos', c.pat, { name: c.repo, private: true, description: desc || 'Mizaniyati encrypted vault' });
     return r.full_name;
   }
   async function ensureBranch(c) {
@@ -48,7 +48,7 @@ const Sync = (() => {
     catch (e) {
       if (e.status === 404) {
         await gh('PUT', pathOf(c), c.pat, {
-          message: 'chore: init mizan vault',
+          message: 'chore: init mizaniyati vault',
           content: b64encode('[]'),
           branch: c.branch || 'main',
         });
@@ -72,7 +72,7 @@ const Sync = (() => {
   /* رفع الظرف المشفّر (يستعيد SHA تلقائياً عند تعارض 409) */
   async function pushRemote(c, env, sha, message) {
     const body = {
-      message: message || `mizan: sync ${new Date().toISOString().slice(0, 19)}`,
+      message: message || `mizaniyati: sync ${new Date().toISOString().slice(0, 19)}`,
       content: b64encode(JSON.stringify(env)),
       branch: c.branch || 'main',
     };
@@ -128,7 +128,7 @@ const Sync = (() => {
       /* المستودع فارغ → رفع النسخة الحالية */
       if (!remote) {
         const localEnv = await Vault.exportEnvelope();
-        await pushRemote(c, localEnv, null, 'mizan: initial push');
+        await pushRemote(c, localEnv, null, 'mizaniyati: initial push');
         c.lastSync = Date.now(); logSync(true, 'initial push');
         await Vault.save(d);
         return { action: 'created' };
@@ -152,7 +152,7 @@ const Sync = (() => {
       /* السحابة أحدث */
       if (force === 'push') {
         const localEnv = await Vault.exportEnvelope();
-        await pushRemote(c, localEnv, sha, 'mizan: force push (local newer kept)');
+        await pushRemote(c, localEnv, sha, 'mizaniyati: force push (local newer kept)');
         c.lastSync = Date.now(); logSync(true, 'force pushed');
         await Vault.save(d);
         return { action: 'pushed' };

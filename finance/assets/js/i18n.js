@@ -1,10 +1,10 @@
 /* ============================================================
-   ميزان | Mizan — قاموس اللغتين (عربي / إنجليزي)
+   ميزانيتي | MIZANIYATI — قاموس اللغتين (عربي / إنجليزي)
    ============================================================ */
 const I18n = (() => {
   const dict = {
     /* عام */
-    appName: ['ميزان', 'Mizan'],
+    appName: ['ميزانيتي', 'MIZANIYATI'],
     appTag: ['المستشار المالي الشخصي', 'Your Personal Financial Advisor'],
     ok: ['موافق', 'OK'],
     cancel: ['إلغاء', 'Cancel'],
@@ -82,7 +82,7 @@ const I18n = (() => {
     logout: ['قفل البرنامج', 'Lock app'],
 
     /* الدخول / الحماية */
-    welcome: ['أهلاً بك في ميزان', 'Welcome to Mizan'],
+    welcome: ['أهلاً بك في ميزانيتي', 'Welcome to MIZANIYATI'],
     setupTitle: ['إنشاء خزنتك الخاصة', 'Create your private vault'],
     setupSub: ['بياناتك مشفّرة ولن تغادر جهازك إلا مشفّرة. أنت الوحيد من يستطيع فتحها.', 'Your data is encrypted and never leaves your device unencrypted. Only you can open it.'],
     yourName: ['اسمك', 'Your name'],

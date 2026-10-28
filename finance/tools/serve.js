@@ -19,4 +19,4 @@ http.createServer((req, res) => {
     res.writeHead(200, { 'Content-Type': MIME[path.extname(file)] || 'application/octet-stream', 'Cache-Control': 'no-store' });
     res.end(buf);
   });
-}).listen(port, () => console.log(`Mizan dev server → http://localhost:${port}/`));
+}).listen(port, () => console.log(`Mizaniyati dev server → http://localhost:${port}/`));

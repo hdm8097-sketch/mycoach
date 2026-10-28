@@ -1,5 +1,5 @@
 /* ============================================================
-   ميزان | Mizan — الشاشات: المستشار + التقارير + الإعدادات
+   ميزانيتي | MIZANIYATI — الشاشات: المستشار + التقارير + الإعدادات
    ============================================================ */
 
 /* بطاقة توصية (تستخدم في اللوحة والمستشار) */
@@ -194,6 +194,6 @@ const ViewReports = {
       x.date, x.type === 'income' ? t('income') : t('expense'),
       Data.catName(Data.catById(x.catId)), Accounts.nameOf(data, x.accId), x.amount, x.note || '',
     ]));
-    U.download(`mizan-${mk}.csv`, U.toCSV(rows), 'text/csv');
+    U.download(`mizaniyati-${mk}.csv`, U.toCSV(rows), 'text/csv');
   },
 };

@@ -1,5 +1,5 @@
 /* ============================================================
-   ميزان | Mizan — أيقونات Solar Line Duotone (محفوظة محلياً)
+   ميزانيتي | MIZANIYATI — أيقونات Solar Line Duotone (محفوظة محلياً)
    المصدر: Solar Icon Set — 480-Design/Solar-Icon-Set على GitHub
    https://www.svgrepo.com/collection/solar-line-duotone-icons/
    الرخصة: مجانية للاستخدام الشخصي والتجاري — الإسناد مُقدَّر.
@@ -117,4 +117,4 @@ function icHTML(name, cls, size) {
   return '<svg class="ic' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true" style="' + s + '">' + (Icons[name] || Icons.box || '') + '</svg>';
 }
 
-console.debug("[mizan] icons loaded:", Object.keys(Icons).length);
+console.debug("[mizaniyati] icons loaded:", Object.keys(Icons).length);

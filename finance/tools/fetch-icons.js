@@ -1,5 +1,5 @@
 /* ============================================================
-   ميزان | Mizan — جلب أيقونات Solar Line Duotone
+   ميزانيتي | MIZANIYATI — جلب أيقونات Solar Line Duotone
    المصدر: 480-Design/Solar-Icon-Set (GitHub) — نفس مجموعة SVG Repo
    https://www.svgrepo.com/collection/solar-line-duotone-icons/
    يُنتج: assets/js/icons.js  (يعمل بدون إنترنت داخل PWA)
@@ -133,7 +133,7 @@ async function main() {
     process.stdout.write(`[${i}/${entries.length}] ${key} … `);
     try {
       const url = BASE + encodeURIComponent(file + '.svg');
-      const res = await fetch(url, { headers: { 'User-Agent': 'mizan-icons' } });
+      const res = await fetch(url, { headers: { 'User-Agent': 'mizaniyati-icons' } });
       if (!res.ok) { console.log('HTTP ' + res.status); missing.push(`${key} (${file})`); continue; }
       const svg = await res.text();
       /* استخراج المحتوى الداخلي وتحويل الألوان إلى currentColor */
@@ -147,7 +147,7 @@ async function main() {
   }
 
   const header = `/* ============================================================
-   ميزان | Mizan — أيقونات Solar Line Duotone (محفوظة محلياً)
+   ميزانيتي | MIZANIYATI — أيقونات Solar Line Duotone (محفوظة محلياً)
    المصدر: Solar Icon Set — 480-Design/Solar-Icon-Set على GitHub
    https://www.svgrepo.com/collection/solar-line-duotone-icons/
    الرخصة: مجانية للاستخدام الشخصي والتجاري — الإسناد مُقدَّر.
@@ -173,7 +173,7 @@ function icHTML(name, cls, size) {
 }
 `;
   const file = path.join(__dirname, '..', 'assets', 'js', 'icons.js');
-  fs.writeFileSync(file, header + '\nconsole.debug("[mizan] icons loaded:", Object.keys(Icons).length);\n', 'utf8');
+  fs.writeFileSync(file, header + '\nconsole.debug("[mizaniyati] icons loaded:", Object.keys(Icons).length);\n', 'utf8');
   console.log(`\n✓ ${Object.keys(out).length} icon → ${path.relative(process.cwd(), file)}`);
   if (missing.length) console.log('⚠️ لم تُعثر على:\n  ' + missing.join('\n  '));
 }
