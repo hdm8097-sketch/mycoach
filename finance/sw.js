@@ -21,6 +21,8 @@ const ASSETS = [
   './assets/js/app.js',
   './assets/img/icon-192.png',
   './assets/img/icon-512.png',
+  './assets/img/icon-192-maskable.png',
+  './assets/img/icon-512-maskable.png',
   './assets/img/favicon.png',
 ];
 
