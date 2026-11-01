@@ -178,7 +178,7 @@ const U = (() => {
   function confirmBox(msg, { danger = false, okLabel, cancelLabel, detail } = {}) {
     return new Promise(res => {
       modal({
-        title: danger ? (typeof icHTML === 'function' ? icHTML('danger') + ' ' : '⚠️ ') + t('confirm') : t('confirm'),
+        title: danger ? (typeof icHTML === 'function' ? icHTML('danger') + ' ' : '') + t('confirm') : t('confirm'),
         body: el('div', { class: 'confirm-body' }, el('p', {}, msg), detail ? el('p', { class: 'muted small' }, detail) : null),
         actions: [
           { label: cancelLabel || t('cancel'), class: 'btn-ghost', onClick: c => { c(); res(false); } },

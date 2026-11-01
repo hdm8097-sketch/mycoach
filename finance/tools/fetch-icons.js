@@ -175,7 +175,7 @@ function icHTML(name, cls, size) {
   const file = path.join(__dirname, '..', 'assets', 'js', 'icons.js');
   fs.writeFileSync(file, header + '\nconsole.debug("[mizaniyati] icons loaded:", Object.keys(Icons).length);\n', 'utf8');
   console.log(`\n✓ ${Object.keys(out).length} icon → ${path.relative(process.cwd(), file)}`);
-  if (missing.length) console.log('⚠️ لم تُعثر على:\n  ' + missing.join('\n  '));
+  if (missing.length) console.log('تنبيه: لم تُعثر على:\n  ' + missing.join('\n  '));
 }
 
 main().catch(e => { console.error(e); process.exit(1); });
