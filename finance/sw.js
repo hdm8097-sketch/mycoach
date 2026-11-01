@@ -1,5 +1,5 @@
 /* ميزانيتي | MIZANIYATI — عامل الخدمة (PWA): يعمل بدون إنترنت بعد أول زيارة */
-const CACHE = 'mizan-v3';
+const CACHE = 'mizan-v4';
 const ASSETS = [
   './',
   './index.html',

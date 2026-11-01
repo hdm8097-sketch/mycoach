@@ -1,0 +1,46 @@
+<!doctype html>
+<!-- مولّد أيقونات التطبيق (PNG) من أيقونة المحفظة في مجموعة Multicolor
+     التشغيل: افتح finance/tools/gen-icons.html عبر الخادم ثم استدعِ في Console:
+       await __genIcon(512)  ثم  await __genIcon(192)  ثم  await __genIcon(48)
+     ثم انسخ الملفات الناتجة إلى finance/assets/img/ (favicon.png = مقاس 48)
+     التصميم: محفظة Multicolor (wallet) بيضاء/وردية على تدرّج نيلي #5b21b6 ← #7c56f2
+-->
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>توليد أيقونات التطبيق</title>
+<style>body{margin:0;font-family:system-ui,sans-serif;background:#f4f5fa;padding:16px}</style>
+</head><body>
+<script src="../assets/js/icons-mc.js"></script>
+<script>
+(function () {
+  var BG = ['#5b21b6', '#7c56f2']; // تدرّج نيلي ينتهي بلون الهوية
+  window.__genIcon = function (size) {
+    var mc = IconsMC['wallet'];
+    var vb = mc.vb, s = mc.s;
+    var pad = size * 0.20, gsize = size - pad * 2;
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '">' +
+      '<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop offset="0" stop-color="' + BG[0] + '"/><stop offset="1" stop-color="' + BG[1] + '"/>' +
+      '</linearGradient></defs>' +
+      '<rect width="' + size + '" height="' + size + '" rx="' + Math.round(size * 0.22) + '" fill="url(#bg)"/>' +
+      '<svg x="' + pad + '" y="' + pad + '" width="' + gsize + '" height="' + gsize + '" viewBox="' + vb + '" color="#ffffff">' + s + '</svg>' +
+      '</svg>';
+    var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    return new Promise(function (res) {
+      var img = new Image();
+      img.onload = function () {
+        var cv = document.createElement('canvas');
+        cv.width = size; cv.height = size;
+        cv.getContext('2d').drawImage(img, 0, 0, size, size);
+        cv.toBlob(function (blob) {
+          var a = document.createElement('a');
+          a.href = URL.createObjectURL(blob);
+          a.download = 'icon-' + size + '.png';
+          document.body.appendChild(a); a.click();
+          res({ ok: true, size: size, bytes: blob.size });
+        }, 'image/png');
+      };
+      img.onerror = function () { res({ ok: false, size: size }); };
+      img.src = url;
+    });
+  };
+})();
+</script></body></html>
